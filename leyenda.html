@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>México Grande - Diversidad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ================= VARIABLES Y RESET ================= */
+        :root {
+            --primary-color: #006847;
+            --secondary-color: #ce1126;
+            --accent-color: #f4a261;
+            --gold: #d4af37;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* ================= MENÚ LATERAL ================= */
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .menu-item:hover {
+            width: 150px;
+            border-radius: 30px;
+            background-color: var(--secondary-color);
+            justify-content: flex-start;
+            padding-left: 20px;
+        }
+
+        .menu-item span {
+            display: none;
+            margin-left: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .menu-item:hover span {
+            display: block;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 40px;
+            border-bottom-left-radius: 50% 20px;
+            border-bottom-right-radius: 50% 20px;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= SECCIONES ================= */
+        section {
+            padding: 40px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* ================= GRID DE TARJETAS ================= */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .grid-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+            height: 280px;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .grid-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+        }
+
+        .grid-item .overlay-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 20px 15px 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .grid-item:hover .overlay-title {
+            background: linear-gradient(to top, rgba(206, 17, 38, 0.9), transparent);
+        }
+
+        /* ================= MODAL / DETALLE ================= */
+        .detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .detail-overlay.active {
+            display: flex;
+        }
+
+        .detail-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 950px;
+            height: 80vh;
+            border-radius: 20px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: zoomIn 0.4s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .detail-image {
+            flex: 1;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .detail-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .detail-info {
+            flex: 1;
+            padding: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .detail-info h3 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 15px;
+        }
+
+        .detail-info p {
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #555;
+            font-size: 1.05rem;
+        }
+
+        .detail-info a {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
+            width: fit-content;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(206, 17, 38, 0.3);
+        }
+
+        .detail-info a:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 104, 71, 0.4);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+      /* ================= SECCIÓN FESTIVIDADES ================= */
+.festividades-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    gap: 50px 80px;
+    padding: 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    justify-items: center;
+    position: relative;
+}
+
+/* Círculos de los meses CON IMAGEN DE FONDO */
+.month-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 10;
+    border: 5px solid rgba(255,255,255,0.8);
+    flex-shrink: 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ccc; /* Color de respaldo si la imagen no carga */
+}
+
+/* Capa degradada para que el texto se lea bien */
+.month-circle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0) 100%);
+    z-index: 1;
+    transition: all 0.35s ease;
+}
+
+/* Etiqueta con el nombre del mes */
+.month-circle-label {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 7px 18px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 18px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.35);
+    transition: all 0.35s ease;
+    letter-spacing: 0.5px;
+}
+
+/* Efecto hover */
+.month-circle:hover {
+    transform: scale(1.08);
+    z-index: 15;
+    border-color: white;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.3);
+}
+
+.month-circle:hover::before {
+    background: linear-gradient(to top, rgba(206, 17, 38, 0.85) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+}
+
+.month-circle:hover .month-circle-label {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-color);
+    transform: scale(1.05);
+    border-color: var(--gold);
+}
+
+/* Estado seleccionado */
+.month-circle.selected {
+    transform: scale(1.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.35), 0 18px 40px rgba(0,0,0,0.3);
+}
+
+.month-circle.selected .month-circle-label {
+    background: var(--gold);
+    color: white;
+    border-color: white;
+}
+
+/* ================= PANEL LATERAL DE FESTIVIDADES ================= */
+.festival-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 900;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.festival-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.festival-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 480px;
+    max-width: 90vw;
+    height: 100vh;
+    background: white;
+    z-index: 1000;
+    box-shadow: -10px 0 40px rgba(0,0,0,0.3);
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.festival-panel.active {
+    transform: translateX(0);
+}
+
+.festival-panel-header {
+    padding: 25px 30px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.festival-panel-header h3 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: white;
+    border: none;
+    padding: 0;
+    text-align: left;
+}
+
+.close-panel {
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.3s ease;
+    color: white;
+    font-weight: bold;
+}
+
+.close-panel:hover {
+    transform: rotate(90deg);
+    color: var(--gold);
+}
+
+.festival-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Tarjeta de cada festividad */
+.festival-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 5px solid var(--primary-color);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.festival-card:hover {
+    transform: translateX(-8px);
+    background: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    border-left-color: var(--secondary-color);
+}
+
+.festival-card-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 4px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.festival-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.festival-card-info h4 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.festival-card-info p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .festividades-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px 20px;
+        padding: 20px 10px;
+    }
+    .month-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 1rem;
+        border-width: 3px;
+    }
+    .festival-panel {
+        width: 100%;
+    }
+    .festival-panel-header h3 {
+        font-size: 1.4rem;
+    }
+    .festival-card-img {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+        /* ================= FOOTER ================= */
+        footer {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        footer p {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .about-us {
+            max-width: 700px;
+            margin: 25px auto 0;
+            font-size: 0.95rem;
+            color: #ccc;
+            line-height: 1.6;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .detail-content {
+                flex-direction: column;
+                height: 90vh;
+            }
+            .detail-image {
+                height: 40%;
+            }
+            .detail-info {
+                height: 60%;
+                padding: 25px;
+            }
+            .detail-info h3 { font-size: 1.6rem; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: 10px;
+                top: auto;
+                bottom: 20px;
+                flex-direction: row;
+                transform: none;
+                width: calc(100% - 20px);
+                justify-content: center;
+                gap: 8px;
+            }
+            .menu-item {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            .menu-item:hover {
+                width: 50px;
+                padding-left: 0;
+                justify-content: center;
+                border-radius: 50%;
+                background-color: var(--primary-color);
+            }
+            .menu-item span { display: none !important; }
+            header h1 { font-size: 2.5rem; }
+            header p { font-size: 1rem; }
+            section { padding: 20px 15px 100px; }
+            .grid-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+            .grid-item { height: 200px; }
+            .grid-item .overlay-title { font-size: 0.9rem; padding: 15px 10px 8px; }
+            .month-circle { width: 80px; height: 80px; font-size: 0.85rem; }
+            .fest-circle { width: 65px; height: 65px; }
+            .festividades-container { gap: 15px; }
+            .close-btn { top: 10px; right: 20px; font-size: 35px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENÚ LATERAL -->
+    <nav class="sidebar">
+        <div class="menu-item" onclick="showSection('inicio', this)">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+        </div>
+        <div class="menu-item" onclick="showSection('leyendas', this)">
+            <i class="fas fa-book-open"></i>
+            <span>Leyendas</span>
+        </div>
+        <div class="menu-item" onclick="showSection('fauna', this)">
+            <i class="fas fa-paw"></i>
+            <span>Fauna</span>
+        </div>
+        <div class="menu-item" onclick="showSection('festividades', this)">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Festividades</span>
+        </div>
+        <div class="menu-item" onclick="showSection('gastronomia', this)">
+            <i class="fas fa-utensils"></i>
+            <span>Gastronomía</span>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header>
+        <h1>México Grande</h1>
+        <p>Descubre la diversidad de nuestro país</p>
+    </header>
+
+    <!-- SECCIÓN INICIO -->
+    <section id="inicio" class="active">
+        <div class="section-header">
+            <h2>Bienvenido a México Grande</h2>
+        </div>
+        <p style="text-align: center; font-size: 1.2rem; line-height: 1.8; max-width: 800px; margin: 0 auto;">
+            Explora las maravillas de México a través de sus <strong>leyendas</strong>, 
+            <strong>fauna</strong>, <strong>festividades</strong> y <strong>gastronomía</strong>. 
+            Un recorrido por la riqueza cultural y natural de nuestro país.
+        </p>
+        <div style="text-align: center; margin-top: 40px; font-size: 3rem; color: var(--primary-color);">
+            <i class="fas fa-map-marked-alt"></i>
+        </div>
+    </section>
+
+    <!-- SECCIÓN LEYENDAS -->
+    <section id="leyendas">
+        <div class="section-header">
+            <h2>Leyendas de México</h2>
+        </div>
+        <div class="grid-container" id="leyendas-grid"></div>
+    </section>
+
+    <!-- SECCIÓN FAUNA -->
+    <section id="fauna">
+        <div class="section-header">
+            <h2>Fauna Mexicana</h2>
+        </div>
+        <div class="grid-container" id="fauna-grid"></div>
+    </section>
+
+  <!-- SECCIÓN FESTIVIDADES -->
+<section id="festividades">
+    <div class="section-header">
+        <h2>Festividades por Mes</h2>
+    </div>
+    <div class="festividades-container" id="festividades-container">
+        <!-- Los meses se generan con JS -->
+    </div>
+    
+    <!-- Panel lateral donde aparecen las festividades del mes seleccionado -->
+    <div class="festival-panel" id="festival-panel">
+        <div class="festival-panel-header">
+            <h3 id="festival-mes-titulo">Mes</h3>
+            <span class="close-panel" onclick="cerrarPanelFestividades()">&times;</span>
+        </div>
+        <div class="festival-list" id="festival-list">
+            <!-- Se llena con JS -->
+        </div>
+    </div>
+    
+    <!-- Fondo oscuro para el panel -->
+    <div class="festival-backdrop" id="festival-backdrop" onclick="cerrarPanelFestividades()"></div>
+</section>
+
+    <!-- SECCIÓN GASTRONOMÍA -->
+    <section id="gastronomia">
+        <div class="section-header">
+            <h2>Gastronomía Mexicana</h2>
+        </div>
+        <div class="grid-container" id="gastronomia-grid"></div>
+    </section>
+
+    <!-- OVERLAY DE DETALLE -->
+    <div class="detail-overlay" id="detail-overlay">
+        <span class="close-btn" onclick="closeDetail()">&times;</span>
+        <div class="detail-content">
+            <div class="detail-image">
+                <img id="detail-img" src="" alt="Detalle">
+            </div>
+            <div class="detail-info">
+                <h3 id="detail-title"></h3>
+                <p id="detail-desc"></p>
+                <a id="detail-link" href="#" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Leer más
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-title">México Grande</div>
+        <p>&copy; 2024 México Grande. Todos los derechos reservados.</p>
+        <p>Contacto: <a href="mailto:a24328061310454@cetis131.edu.mx">a24328061310454@cetis131.edu.mx</a></p>
+        <div class="about-us">
+            <p><strong>Sobre nosotros:</strong> Creada para dar a conocer un poco de la maravillosa diversidad de México. Un proyecto que celebra nuestras raíces, tradiciones y riqueza natural.</p>
+        </div>
+    </footer>
+
+   <script>
+    // ================= DATOS REALES =================
+    const data = {
+        leyendas: [
+            { 
+                title: "La Llorona", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Cuenta la leyenda que una mujer llamada María vaga por las noches llorando por sus hijos. Se dice que ahogó a sus hijos en un río tras ser abandonada por su esposo, y ahora su espíritu busca su perdón eternamente. Es una de las leyendas más antiguas y conocidas de México, con raíces prehispánicas.", 
+                link: "https://es.wikipedia.org/wiki/La_Llorona" 
+            },
+            { 
+                title: "El Chupacabras", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Criatura legendaria que ataca al ganado y succiona su sangre. Los primeros avistamientos fueron en Puerto Rico en 1995 y rápidamente se extendieron por México y Latinoamérica. Se describe como un ser con espinas dorsales, ojos rojos y colmillos.", 
+                link: "https://es.wikipedia.org/wiki/Chupacabras" 
+            },
+            { 
+                title: "La Isla de las Muñecas", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "En los canales de Xochimilco, un hombre llamado Julián Santana colgó muñecas de los árboles para espantar el espíritu de una niña que se ahogó. Tras su muerte en 2001, el lugar se convirtió en un sitio turístico famoso por su atmósfera escalofriante.", 
+                link: "https://es.wikipedia.org/wiki/Isla_de_las_Mu%C3%B1ecas" 
+            },
+            { 
+                title: "El Callejón del Beso", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "En Guanajuato, dos amantes se besaban desde balcones separados por apenas unos centímetros. El padre de la joven la apuñaló al descubrirlos, y ella murió en brazos de su amado. La leyenda dice que quien se bese en el tercer escalón tendrá 15 años de buena suerte.", 
+                link: "https://es.wikipedia.org/wiki/Callej%C3%B3n_del_Beso" 
+            },
+            { 
+                title: "La Pascualita", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "En Chihuahua, una novia disecada permanece en el escaparate de una tienda de vestidos de novia. Se dice que es el cuerpo embalsamado de la hija de la dueña, quien murió el día de su boda por una araña. Muchos juran que mueve los ojos.", 
+                link: "https://es.wikipedia.org/wiki/La_Pascualita" 
+            },
+            { 
+                title: "El Niño del Tambor", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Leyenda que narra la historia de un niño que toca su tambor cada noche en las calles de un pueblo. Se dice que es el espíritu de un niño que murió y que su tambor anuncia desgracias o protege a los viajeros.", 
+                link: "#" 
+            }
+        ],
+        fauna: [
+            { 
+                title: "Ajolote", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Anfibio endémico de los canales de Xochimilco. Está en peligro crítico de extinción debido a la contaminación y pérdida de hábitat. Es famoso por su capacidad de regenerar extremidades. Es considerado un símbolo de la conservación en México.", 
+                link: "https://es.wikipedia.org/wiki/Axolotl" 
+            },
+            { 
+                title: "Jaguar", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "El felino más grande de América. Habita en las selvas del sur de México, especialmente en la Península de Yucatán y Chiapas. Está en peligro de extinción por la caza furtiva y la destrucción de su hábitat. Es un animal sagrado en la cultura maya.", 
+                link: "https://es.wikipedia.org/wiki/Panthera_onca" 
+            },
+            { 
+                title: "Guacamaya Roja", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Ave colorida que habita en las selvas tropicales de Chiapas y Veracruz. Es símbolo de la biodiversidad mexicana y está amenazada por el tráfico ilegal de especies. Su plumaje rojo, azul y amarillo la hace inconfundible.", 
+                link: "https://es.wikipedia.org/wiki/Ara_macao" 
+            },
+            { 
+                title: "Lobo Mexicano", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Subespecie del lobo gris que estuvo a punto de extinguirse en los años 70. Gracias a programas de conservación, su población ha aumentado. Habita en zonas montañosas del norte de México. Es uno de los mamíferos más amenazados del país.", 
+                link: "https://es.wikipedia.org/wiki/Canis_lupus_baileyi" 
+            },
+            { 
+                title: "Tortuga Golfina", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "Tortuga marina que anida en las costas mexicanas del Pacífico. Está en peligro de extinción debido a la pesca incidental y el saqueo de nidos. México es uno de los principales sitios de anidación a nivel mundial.", 
+                link: "https://es.wikipedia.org/wiki/Lepidochelys_olivacea" 
+            },
+            { 
+                title: "VaQUITA Marina", 
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=500&fit=crop", 
+                desc: "El cetáceo más pequeño del mundo y el más amenazado. Solo habita en el Alto Golfo de California y quedan menos de 10 individuos. La pesca ilegal con redes de enmalle es su principal amenaza.", 
+                link: "https://es.wikipedia.org/wiki/Vaquita_marina" 
+            }
+        ],
+        gastronomia: [
+            { 
+                title: "Tacos al Pastor", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Platillo emblemático de la cocina mexicana. Carne de cerdo marinada en achiote y especias, cocinada en un trompo vertical y servida en tortillas de maíz con piña, cebolla y cilantro. Su origen combina influencias libanesas y mexicanas.", 
+                link: "https://es.wikipedia.org/wiki/Tacos_al_pastor" 
+            },
+            { 
+                title: "Mole Poblano", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Salsa compleja que combina chiles, chocolate, especias y semillas. Es el platillo más representativo de Puebla. Se sirve sobre pavo o pollo. Su receta tradicional puede incluir más de 30 ingredientes y su origen se atribuye a los conventos coloniales.", 
+                link: "https://es.wikipedia.org/wiki/Mole_poblano" 
+            },
+            { 
+                title: "Pozole", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Caldo tradicional hecho con maíz cacahuazintle y carne de cerdo o pollo. Se sirve con lechuga, rábanos, cebolla, orégano y limón. Es un platillo ceremonial de origen prehispánico que se consume en festividades y ocasiones especiales.", 
+                link: "https://es.wikipedia.org/wiki/Pozole" 
+            },
+            { 
+                title: "Chiles en Nogada", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Platillo creado en Puebla para celebrar la independencia de México. Consiste en chiles poblanos rellenos de picadillo, cubiertos con salsa de nuez y granada. Sus colores (verde, blanco y rojo) representan la bandera mexicana.", 
+                link: "https://es.wikipedia.org/wiki/Chiles_en_nogada" 
+            },
+            { 
+                title: "Enchiladas", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Tortillas de maíz rellenas de pollo o queso, bañadas en salsa de chile y servidas con crema, queso y cebolla. Existen muchas variedades regionales: verdes, rojas, suizas, potosinas, etc. Es un platillo versátil y muy popular.", 
+                link: "https://es.wikipedia.org/wiki/Enchilada" 
+            },
+            { 
+                title: "Tamales", 
+                img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=500&fit=crop", 
+                desc: "Masa de maíz rellena de carne, verduras o dulce, envuelta en hoja de maíz o plátano y cocida al vapor. Es uno de los platillos más antiguos de México, con origen prehispánico. Se consumen especialmente en el Día de la Candelaria.", 
+                link: "https://es.wikipedia.org/wiki/Tamal" 
+            }
+        ]
+    };
+
+    // ================= NAVEGACIÓN =================
+    function showSection(id, element) {
+        document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        closeDetail();
+        
+        // Cerrar flor de festividades si está abierta
+        const flowerContainer = document.getElementById('flower-container');
+        if (flowerContainer) {
+            flowerContainer.classList.remove('active');
+            flowerContainer.innerHTML = '';
+            flowerContainer.dataset.mes = '';
+        }
+        
+        // Efecto visual en el menú
+        if (element) {
+            element.style.transform = 'scale(0.9)';
+            setTimeout(() => element.style.transform = '', 200);
+        }
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ================= RENDERIZAR GRIDS =================
+    function renderGrids() {
+        const configs = [
+            { id: 'leyendas-grid', data: data.leyendas },
+            { id: 'fauna-grid', data: data.fauna },
+            { id: 'gastronomia-grid', data: data.gastronomia }
+        ];
+
+        configs.forEach(config => {
+            const grid = document.getElementById(config.id);
+            if (!grid) return;
+            grid.innerHTML = '';
+            config.data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'grid-item';
+                div.innerHTML = `
+                    <img src="${item.img}" alt="${item.title}">
+                    <div class="overlay-title">${item.title}</div>
+                `;
+                div.onclick = () => openDetail(item.title, item.img, item.desc, item.link);
+                grid.appendChild(div);
+            });
+        });
+    }
+
+    // ================= DETALLE (MODAL) =================
+    function openDetail(title, img, desc, link) {
+        document.getElementById('detail-title').innerText = title;
+        document.getElementById('detail-img').src = img;
+        document.getElementById('detail-desc').innerText = desc;
+        document.getElementById('detail-link').href = link;
+        
+        document.getElementById('detail-overlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+        document.getElementById('detail-overlay').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // ================= FESTIVIDADES =================
+const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+const festividadesData = {
+    "Enero": [
+        { title: "Año Nuevo", img: "https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=200&h=200&fit=crop", desc: "Se celebra el 1 de enero. Comienza el año con tradiciones como comer 12 uvas y usar ropa interior de colores.", link: "#" },
+        { title: "Día de Reyes", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=200&h=200&fit=crop", desc: "El 6 de enero se parte la Rosca de Reyes. Quien encuentra el niño debe hacer tamales el 2 de febrero.", link: "#" },
+        { title: "Día de Reyes", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=200&h=200&fit=crop", desc: "El 6 de enero se parte la Rosca de Reyes. Quien encuentra el niño debe hacer tamales el 2 de febrero.", link: "#" }
+
+    ],
+    "Febrero": [
+        { title: "Día de la Candelaria", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=200&h=200&fit=crop", desc: "El 2 de febrero se visten los Niños Dios y se comen tamales.", link: "#" },
+        { title: "Día de San Valentín", img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=200&h=200&fit=crop", desc: "El 14 de febrero se celebra el amor y la amistad.", link: "#" },
+        { title: "Carnaval de Veracruz", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=200&fit=crop", desc: "Se celebra antes de la Cuaresma con desfiles, música y baile.", link: "#" }
+    ],
+    "Marzo": [
+        { title: "Natalicio de Benito Juárez", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 21 de marzo se conmemora el nacimiento del Benemérito de las Américas.", link: "#" },
+        { title: "Equinoccio de Primavera", img: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=200&h=200&fit=crop", desc: "El 21 de marzo miles de personas visitan Teotihuacán y Chichén Itzá.", link: "#" }
+    ],
+    "Abril": [
+        { title: "Semana Santa", img: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=200&h=200&fit=crop", desc: "Se celebra la Pasión, Muerte y Resurrección de Cristo.", link: "#" },
+        { title: "Día del Niño", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop", desc: "El 30 de abril se celebra a los niños con eventos y regalos.", link: "#" }
+    ],
+    "Mayo": [
+        { title: "Día del Trabajo", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&h=200&fit=crop", desc: "El 1 de mayo se conmemora la lucha de los trabajadores.", link: "#" },
+        { title: "Batalla de Puebla", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 5 de mayo se conmemora la victoria sobre el ejército francés.", link: "#" },
+        { title: "Día de las Madres", img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=200&h=200&fit=crop", desc: "El 10 de mayo se celebra a las madres mexicanas.", link: "#" }
+    ],
+    "Junio": [
+        { title: "Día del Padre", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=200&h=200&fit=crop", desc: "El tercer domingo de junio se celebra a los padres.", link: "#" },
+        { title: "Día de la Marina", img: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=200&h=200&fit=crop", desc: "El 1 de junio se honra a los marinos mexicanos.", link: "#" }
+    ],
+    "Julio": [
+        { title: "Guelaguetza", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=200&fit=crop", desc: "Se celebra en Oaxaca los dos últimos lunes de julio.", link: "#" },
+        { title: "Día de la Independencia (EEUU)", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=200&fit=crop", desc: "El 4 de julio se celebra en zonas fronterizas.", link: "#" }
+    ],
+    "Agosto": [
+        { title: "Día de los Pueblos Indígenas", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 9 de agosto se reconoce la diversidad cultural.", link: "#" },
+        { title: "Feria de San Marcos", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=200&fit=crop", desc: "Se celebra en Aguascalientes durante agosto.", link: "#" }
+    ],
+    "Septiembre": [
+        { title: "Grito de Dolores", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 15 de septiembre por la noche, el presidente da el Grito.", link: "#" },
+        { title: "Día de la Independencia", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 16 de septiembre se conmemora el inicio de la Independencia.", link: "#" }
+    ],
+    "Octubre": [
+        { title: "Día de la Raza", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 12 de octubre se conmemora la llegada de Colón a América.", link: "#" },
+        { title: "Festival Cervantino", img: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=200&h=200&fit=crop", desc: "Se celebra en Guanajuato durante octubre.", link: "#" }
+    ],
+    "Noviembre": [
+        { title: "Día de Muertos", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "Se celebra el 1 y 2 de noviembre. Se honra a los difuntos.", link: "#" },
+        { title: "Revolución Mexicana", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 20 de noviembre se conmemora la Revolución Mexicana.", link: "#" }
+    ],
+    "Diciembre": [
+        { title: "Virgen de Guadalupe", img: "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=200&h=200&fit=crop", desc: "El 12 de diciembre millones de peregrinos visitan la Basílica.", link: "#" },
+        { title: "Posadas", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=200&h=200&fit=crop", desc: "Del 16 al 24 de diciembre se realizan las posadas.", link: "#" },
+        { title: "Navidad", img: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=200&h=200&fit=crop", desc: "El 25 de diciembre se celebra el nacimiento de Jesús.", link: "#" }
+    ]
+};
+
+// ================= IMÁGENES DE CADA MES =================
+const mesImagenes = {
+    "Enero":       "https://images.unsplash.com/photo-1483664852095-d6cc6870702d?w=400&h=400&fit=crop",
+    "Febrero":     "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=400&fit=crop",
+    "Marzo":       "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=400&fit=crop",
+    "Abril":       "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&h=400&fit=crop",
+    "Mayo":        "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=400&fit=crop",
+    "Junio":       "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400&h=400&fit=crop",
+    "Julio":       "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop",
+    "Agosto":      "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=400&h=400&fit=crop",
+    "Septiembre":  "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=400&h=400&fit=crop",
+    "Octubre":     "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop",
+    "Noviembre":   "https://images.unsplash.com/photo-1518638150340-f706e86654de?w=400&h=400&fit=crop",
+    "Diciembre":   "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=400&h=400&fit=crop"
+};
+
+function renderFestividades() {
+    const container = document.getElementById('festividades-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+
+    meses.forEach((mes) => {
+        const circle = document.createElement('div');
+        circle.className = 'month-circle';
+        circle.setAttribute('data-mes', mes);
+        
+        // 🖼️ Aplicar imagen de fondo al círculo
+        circle.style.backgroundImage = `url('${mesImagenes[mes]}')`;
+        
+        // 🏷️ Etiqueta con el nombre del mes encima
+        circle.innerHTML = `<span class="month-circle-label">${mes}</span>`;
+        
+        circle.onclick = () => abrirPanelFestividades(mes, circle);
+        container.appendChild(circle);
+    });
+}
+
+function abrirPanelFestividades(mes, circleElement) {
+    const panel = document.getElementById('festival-panel');
+    const backdrop = document.getElementById('festival-backdrop');
+    const titulo = document.getElementById('festival-mes-titulo');
+    const lista = document.getElementById('festival-list');
+    
+    // Quitar selección previa
+    document.querySelectorAll('.month-circle').forEach(c => c.classList.remove('selected'));
+    if (circleElement) circleElement.classList.add('selected');
+    
+    // Cambiar título y color según mes
+    titulo.innerText = mes;
+    
+    // Limpiar lista
+    lista.innerHTML = '';
+    
+    const festividades = festividadesData[mes] || [];
+    
+    festividades.forEach(fest => {
+        const card = document.createElement('div');
+        card.className = 'festival-card';
+        card.innerHTML = `
+            <div class="festival-card-img">
+                <img src="${fest.img}" alt="${fest.title}" onerror="this.src='https://via.placeholder.com/100/006847/FFFFFF?text=MX'">
+            </div>
+            <div class="festival-card-info">
+                <h4>${fest.title}</h4>
+                <p>${fest.desc}</p>
+            </div>
+        `;
+        card.onclick = () => openDetail(fest.title, fest.img, fest.desc, fest.link);
+        lista.appendChild(card);
+    });
+    
+    // Activar panel y backdrop
+    panel.classList.add('active');
+    backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarPanelFestividades() {
+    const panel = document.getElementById('festival-panel');
+    const backdrop = document.getElementById('festival-backdrop');
+    panel.classList.remove('active');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    document.querySelectorAll('.month-circle').forEach(c => c.classList.remove('selected'));
+}
+
+    // ================= INICIALIZACIÓN =================
+    window.onload = () => {
+        renderGrids();
+        renderFestividades();
+    };
+
+    // Cerrar modal con tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeDetail();
+            const flowerContainer = document.getElementById('flower-container');
+            if (flowerContainer) {
+                flowerContainer.classList.remove('active');
+                flowerContainer.innerHTML = '';
+            }
+        }
+    });
+</script>
+</body>
+</html>
